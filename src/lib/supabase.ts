@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { logSupabaseError } from '@/lib/logSupabaseError';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
@@ -22,8 +23,7 @@ export async function uploadAudioFile(file: File): Promise<{ path: string; url: 
         });
 
     if (error) {
-        console.error('Supabase Storage Upload Error:', error.message);
-        console.error('Error details:', JSON.stringify(error, null, 2));
+        logSupabaseError('Supabase Storage Upload Error:', error);
         alert(`Upload error: ${error.message}\n\nPastikan:\n1. Bucket 'recordings' sudah dibuat di Supabase Storage\n2. Bucket diset sebagai PUBLIC\n3. Policy storage sudah dikonfigurasi`);
         return null;
     }
@@ -44,7 +44,7 @@ export async function deleteAudioFile(path: string): Promise<boolean> {
         .remove([path]);
 
     if (error) {
-        console.error('Delete error:', error);
+        logSupabaseError('Delete error:', error);
         return false;
     }
 

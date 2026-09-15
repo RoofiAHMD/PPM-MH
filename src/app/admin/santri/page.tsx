@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AdminHeader } from '@/components/admin/Header';
 import { supabase } from '@/lib/supabase';
+import { logSupabaseError } from '@/lib/logSupabaseError';
 import { Santri, SantriFormData, STATUS_SANTRI_OPTIONS } from '@/lib/types';
 import { Plus, Edit2, Trash2, Eye, X } from 'lucide-react';
 
@@ -33,7 +34,7 @@ export default function SantriPage() {
             if (error) throw error;
             setSantriList(data || []);
         } catch (error) {
-            console.error('Error fetching santri:', error);
+            logSupabaseError('Error fetching santri:', error);
         } finally {
             setLoading(false);
         }
@@ -96,7 +97,7 @@ export default function SantriPage() {
             setShowModal(false);
             fetchSantri();
         } catch (error) {
-            console.error('Error saving santri:', error);
+            logSupabaseError('Error saving santri:', error);
             alert('Gagal menyimpan data santri');
         }
     };
@@ -109,7 +110,7 @@ export default function SantriPage() {
             if (error) throw error;
             fetchSantri();
         } catch (error) {
-            console.error('Error deleting santri:', error);
+            logSupabaseError('Error deleting santri:', error);
             alert('Gagal menghapus data santri');
         }
     };

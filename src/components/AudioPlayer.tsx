@@ -148,7 +148,7 @@ export default function AudioPlayer({ recording, onPlayCountUpdate }: AudioPlaye
             <div className="bg-gradient-to-br from-gray-400 to-gray-600 rounded-3xl shadow-2xl p-8 text-white mb-8">
                 <div className="text-center py-12">
                     <Music className="w-16 h-16 opacity-50 mx-auto mb-4" />
-                    <p className="text-xl opacity-75">Belum ada recording aktif</p>
+                    <p className="text-xl opacity-75">Belum ada kajian aktif</p>
                 </div>
             </div>
         );

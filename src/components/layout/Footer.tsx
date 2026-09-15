@@ -24,7 +24,7 @@ export function Footer() {
                                 <p className="text-xs text-emerald-600 font-medium">Pondok Pesantren Mahasiswa</p>
                             </div>
                         </Link>
-                        <p className="text-white-500 text-sm leading-relaxed">
+                        <p className="text-gray-500 text-sm leading-relaxed">
                             Mencetak Generasi Madani: Sarjana yang Mubaligh, Mubaligh yang Sarjana.
                         </p>
                         {/* Ornament */}
@@ -39,24 +39,33 @@ export function Footer() {
                     <div>
                         <h4 className="text-gray-800 font-semibold mb-4 text-sm uppercase tracking-widest">Link Cepat</h4>
                         <ul className="space-y-2">
-                            {['Home', 'Profil', 'Program', 'Fasilitas', 'Kontak'].map((link) => (
+                            {['Home', 'Profil', 'Program', 'Fasilitas', 'Galeri', 'Kontak'].map((link) => (
                                 <li key={link}>
                                     <a
                                         href={`#${link.toLowerCase()}`}
-                                        className="text-white-500 hover:text-emerald-600 text-sm transition flex items-center gap-1.5 group"
+                                        className="text-gray-500 hover:text-emerald-600 text-sm transition flex items-center gap-1.5 group"
                                     >
                                         <span className="w-1 h-1 rounded-full bg-emerald-300 group-hover:bg-emerald-500 transition" />
                                         {link}
                                     </a>
                                 </li>
                             ))}
+                            <li>
+                                <Link
+                                    href="/player"
+                                    className="text-gray-500 hover:text-emerald-600 text-sm transition flex items-center gap-1.5 group"
+                                >
+                                    <span className="w-1 h-1 rounded-full bg-emerald-300 group-hover:bg-emerald-500 transition" />
+                                    Kajian
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 
                     {/* Contact */}
                     <div>
                         <h4 className="text-gray-800 font-semibold mb-4 text-sm uppercase tracking-widest">Kontak</h4>
-                        <ul className="space-y-1.5 text-white-500 text-sm leading-relaxed">
+                        <ul className="space-y-1.5 text-gray-500 text-sm leading-relaxed">
                             <li>Jl. Bijaksana 2 No. 8</li>
                             <li>Pasteur, Sukajadi</li>
                             <li>Kota Bandung, Jawa Barat</li>
@@ -86,7 +95,7 @@ export function Footer() {
                                 </a>
                             ))}
                         </div>
-                        <p className="text-white-400 text-xs mt-4 leading-relaxed">
+                        <p className="text-gray-400 text-xs mt-4 leading-relaxed">
                             ppmminhajulhaq@gmail.com
                         </p>
                     </div>
@@ -94,12 +103,12 @@ export function Footer() {
 
                 {/* Bottom bar */}
                 <div className="border-t border-emerald-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <p className="text-white-400 text-sm">
+                    <p className="text-gray-400 text-sm">
                         © {new Date().getFullYear()} PPM Minhajul Haq. All rights reserved.
                     </p>
                     <div className="flex items-center gap-2 text-emerald-400 text-sm select-none">
                         <span>❋</span>
-                        <span className="text-white-400 text-xs">Barakallahu fiikum</span>
+                        <span className="text-gray-400 text-xs">Barakallahu fiikum</span>
                         <span>❋</span>
                     </div>
                 </div>

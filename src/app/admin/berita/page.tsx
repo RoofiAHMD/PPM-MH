@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AdminHeader } from '@/components/admin/Header';
 import { supabase } from '@/lib/supabase';
+import { logSupabaseError } from '@/lib/logSupabaseError';
 import { Berita, CATEGORY_BERITA_OPTIONS } from '@/lib/types';
 import { Plus, Edit2, Trash2, Eye, X, Send } from 'lucide-react';
 
@@ -31,7 +32,7 @@ export default function BeritaPage() {
             if (error) throw error;
             setBeritaList(data || []);
         } catch (error) {
-            console.error('Error fetching berita:', error);
+            logSupabaseError('Error fetching berita:', error);
         } finally {
             setLoading(false);
         }
@@ -70,11 +71,23 @@ export default function BeritaPage() {
     const handleSubmit = async (e: React.FormEvent, publish = false) => {
         e.preventDefault();
         try {
+            const now = new Date().toISOString();
+            const nextStatus = publish ? 'published' : formData.status;
+
+            // published_at hanya boleh kosong kalau beritanya memang draft. Berita yang
+            // tetap published harus mempertahankan tanggal terbitnya, jangan ditimpa null.
+            let publishedAt: string | null = null;
+            if (publish) {
+                publishedAt = now;
+            } else if (nextStatus === 'published') {
+                publishedAt = editingBerita?.published_at ?? now;
+            }
+
             const saveData = {
                 ...formData,
-                status: publish ? 'published' : formData.status,
-                published_at: publish ? new Date().toISOString() : null,
-                updated_at: new Date().toISOString(),
+                status: nextStatus,
+                published_at: publishedAt,
+                updated_at: now,
             };
 
             if (editingBerita) {
@@ -91,7 +104,7 @@ export default function BeritaPage() {
             setShowModal(false);
             fetchBerita();
         } catch (error) {
-            console.error('Error saving berita:', error);
+            logSupabaseError('Error saving berita:', error);
             alert('Gagal menyimpan berita');
         }
     };
@@ -104,7 +117,7 @@ export default function BeritaPage() {
             if (error) throw error;
             fetchBerita();
         } catch (error) {
-            console.error('Error deleting berita:', error);
+            logSupabaseError('Error deleting berita:', error);
             alert('Gagal menghapus berita');
         }
     };
@@ -121,7 +134,7 @@ export default function BeritaPage() {
             if (error) throw error;
             fetchBerita();
         } catch (error) {
-            console.error('Error publishing berita:', error);
+            logSupabaseError('Error publishing berita:', error);
         }
     };
 

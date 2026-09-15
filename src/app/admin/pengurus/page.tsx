@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AdminHeader } from '@/components/admin/Header';
 import { supabase } from '@/lib/supabase';
+import { logSupabaseError } from '@/lib/logSupabaseError';
 import { Pengurus } from '@/lib/types';
 import { Plus, Edit2, Trash2, X, Phone, Mail } from 'lucide-react';
 
@@ -31,7 +32,7 @@ export default function PengurusPage() {
             if (error) throw error;
             setPengurusList(data || []);
         } catch (error) {
-            console.error('Error fetching pengurus:', error);
+            logSupabaseError('Error fetching pengurus:', error);
         } finally {
             setLoading(false);
         }
@@ -84,7 +85,7 @@ export default function PengurusPage() {
             setShowModal(false);
             fetchPengurus();
         } catch (error) {
-            console.error('Error saving pengurus:', error);
+            logSupabaseError('Error saving pengurus:', error);
             alert('Gagal menyimpan data pengurus');
         }
     };
@@ -97,7 +98,7 @@ export default function PengurusPage() {
             if (error) throw error;
             fetchPengurus();
         } catch (error) {
-            console.error('Error deleting pengurus:', error);
+            logSupabaseError('Error deleting pengurus:', error);
             alert('Gagal menghapus pengurus');
         }
     };

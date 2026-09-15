@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Mic, Headphones } from 'lucide-react';
+import { Mic, Home } from 'lucide-react';
 
 export default function PlayerHeader() {
     return (
@@ -13,16 +13,16 @@ export default function PlayerHeader() {
                             <Mic size={20} />
                         </div>
                         <div>
-                            <h1 className="text-lg font-bold text-gray-800">PPM Audio</h1>
-                            <p className="text-xs text-gray-500">Recording Kajian</p>
+                            <h1 className="text-lg font-bold text-gray-800">PPM Minhajul Haq</h1>
+                            <p className="text-xs text-gray-500">Kajian</p>
                         </div>
                     </div>
                     <Link
-                        href="/player"
+                        href="/"
                         className="text-green-600 hover:text-green-700 font-medium flex items-center gap-2"
                     >
-                        <Headphones size={18} />
-                        Player
+                        <Home size={18} />
+                        Beranda
                     </Link>
                 </div>
             </div>

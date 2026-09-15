@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS santri (
 CREATE TABLE IF NOT EXISTS pendaftaran (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   nama VARCHAR(255) NOT NULL,
+  jenis_kelamin VARCHAR(10) NOT NULL CHECK (jenis_kelamin IN ('putra','putri')),
   kampus VARCHAR(255) NOT NULL,
   jurusan VARCHAR(255),
   phone VARCHAR(20) NOT NULL,
@@ -117,6 +118,9 @@ DROP POLICY IF EXISTS "Allow public delete santri" ON santri;
 DROP POLICY IF EXISTS "Allow public insert pendaftaran" ON pendaftaran;
 DROP POLICY IF EXISTS "Allow public update pendaftaran" ON pendaftaran;
 DROP POLICY IF EXISTS "Allow public delete pendaftaran" ON pendaftaran;
+DROP POLICY IF EXISTS "Allow staff read pendaftaran" ON pendaftaran;
+DROP POLICY IF EXISTS "Allow staff update pendaftaran" ON pendaftaran;
+DROP POLICY IF EXISTS "Allow staff delete pendaftaran" ON pendaftaran;
 
 DROP POLICY IF EXISTS "Allow public insert berita" ON berita;
 DROP POLICY IF EXISTS "Allow public update berita" ON berita;
@@ -129,7 +133,6 @@ DROP POLICY IF EXISTS "Allow public delete pengurus" ON pengurus;
 -- Public read policies
 CREATE POLICY "Allow public read recordings" ON recordings FOR SELECT USING (true);
 CREATE POLICY "Allow public read santri" ON santri FOR SELECT USING (true);
-CREATE POLICY "Allow public read pendaftaran" ON pendaftaran FOR SELECT USING (true);
 CREATE POLICY "Allow public read berita" ON berita FOR SELECT USING (true);
 CREATE POLICY "Allow public read pengurus" ON pengurus FOR SELECT USING (true);
 
@@ -142,9 +145,38 @@ CREATE POLICY "Allow public insert santri" ON santri FOR INSERT WITH CHECK (true
 CREATE POLICY "Allow public update santri" ON santri FOR UPDATE USING (true);
 CREATE POLICY "Allow public delete santri" ON santri FOR DELETE USING (true);
 
-CREATE POLICY "Allow public insert pendaftaran" ON pendaftaran FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update pendaftaran" ON pendaftaran FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete pendaftaran" ON pendaftaran FOR DELETE USING (true);
+-- Pendaftaran: formulir publik boleh mengirim, tapi hanya admin/guru yang boleh
+-- membaca dan mengelola. Karena anon tidak punya hak SELECT, kode yang melakukan
+-- insert TIDAK boleh merantai .select() — barisnya tersimpan tapi responsnya error.
+CREATE POLICY "Allow public insert pendaftaran" ON pendaftaran
+  FOR INSERT TO public WITH CHECK (true);
+
+CREATE POLICY "Allow staff read pendaftaran" ON pendaftaran
+  FOR SELECT TO authenticated USING (
+    exists (
+      select 1 from users_profile
+      where users_profile.id = auth.uid()
+        and users_profile.role in ('admin', 'guru')
+    )
+  );
+
+CREATE POLICY "Allow staff update pendaftaran" ON pendaftaran
+  FOR UPDATE TO authenticated USING (
+    exists (
+      select 1 from users_profile
+      where users_profile.id = auth.uid()
+        and users_profile.role in ('admin', 'guru')
+    )
+  );
+
+CREATE POLICY "Allow staff delete pendaftaran" ON pendaftaran
+  FOR DELETE TO authenticated USING (
+    exists (
+      select 1 from users_profile
+      where users_profile.id = auth.uid()
+        and users_profile.role in ('admin', 'guru')
+    )
+  );
 
 CREATE POLICY "Allow public insert berita" ON berita FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update berita" ON berita FOR UPDATE USING (true);

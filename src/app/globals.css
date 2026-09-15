@@ -10,6 +10,9 @@
   --ppm-accent: #34d399;
   --glass-bg: rgba(255, 255, 255, 0.12);
   --glass-border: rgba(255, 255, 255, 0.2);
+  /* Tinggi navbar dalam keadaan sudah di-scroll. Satu nilai ini dipakai untuk tinggi navbar,
+     offset scroll dan pita IntersectionObserver di Navbar.tsx, serta scroll-padding-top. */
+  --navbar-height: 67px;
 }
 
 @theme inline {
@@ -101,7 +104,7 @@ body {
 /* Smooth Scrolling */
 /* Tambahkan ke globals.css — pastikan semua anchor scroll tidak tertutup navbar */
 html {
-  scroll-padding-top: 80px;   /* samakan dengan NAVBAR_HEIGHT di Navbar.tsx */
+  scroll-padding-top: var(--navbar-height);
   scroll-behavior: smooth;
 }
 

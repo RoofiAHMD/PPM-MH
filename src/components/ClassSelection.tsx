@@ -1,29 +1,26 @@
 'use client';
 
-import { useState } from 'react';
 import { Headphones, Zap, Leaf, ArrowLeft, BookOpen, BookOpenText } from 'lucide-react';
+import { KELAS_OPTIONS, MANGKULAN_OPTIONS } from '@/lib/types';
+
+// Nilai yang dikirim ke URL harus sama persis dengan isi kolom kelas/mangkulan di
+// database, jadi ambil dari daftar di types.ts daripada menulis ulang string-nya di sini.
+const [KELAS_CEPATAN, KELAS_LAMBATAN] = KELAS_OPTIONS;
+const [MANGKULAN_QURAN, MANGKULAN_HADITS] = MANGKULAN_OPTIONS;
 
 interface ClassSelectionProps {
-    onSelect: (kelas: string, kajian: string) => void;
+    kelas: string | null;
+    onSelectKelas: (kelas: string) => void;
+    onSelectMangkulan: (mangkulan: string) => void;
+    onBack: () => void;
 }
 
-export default function ClassSelection({ onSelect }: ClassSelectionProps) {
-    const [selectedKelas, setSelectedKelas] = useState<string | null>(null);
-
-    const handleKelasSelect = (kelas: string) => {
-        setSelectedKelas(kelas);
-    };
-
-    const handleKajianSelect = (kajian: string) => {
-        if (selectedKelas) {
-            onSelect(selectedKelas, kajian);
-        }
-    };
-
-    const handleBack = () => {
-        setSelectedKelas(null);
-    };
-
+export default function ClassSelection({
+    kelas,
+    onSelectKelas,
+    onSelectMangkulan,
+    onBack,
+}: ClassSelectionProps) {
     return (
         <div className="min-h-[70vh] flex items-center justify-center px-4">
             <div className="max-w-2xl w-full">
@@ -33,21 +30,21 @@ export default function ClassSelection({ onSelect }: ClassSelectionProps) {
                         <Headphones size={40} />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                        {selectedKelas ? 'Pilih Mangkulan' : 'Pilih Kelas'}
+                        {kelas ? 'Pilih Mangkulan' : 'Pilih Kelas'}
                     </h1>
                     <p className="text-gray-600">
-                        {selectedKelas
-                            ? `Kelas ${selectedKelas === 'cepatan' ? 'Cepatan' : 'Lambatan'} - Pilih jenis mangkulan`
+                        {kelas
+                            ? `Kelas ${kelas === KELAS_CEPATAN.value ? 'Cepatan' : 'Lambatan'} - Pilih jenis mangkulan`
                             : 'Silakan pilih kelas yang ingin Anda ikuti'}
                     </p>
                 </div>
 
                 {/* Step 1: Kelas Selection */}
-                {!selectedKelas && (
+                {!kelas && (
                     <div className="mb-8">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <button
-                                onClick={() => handleKelasSelect('cepatan')}
+                                onClick={() => onSelectKelas(KELAS_CEPATAN.value)}
                                 className="group relative bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-orange-500 focus:border-orange-500 focus:outline-none"
                             >
                                 <div className="text-center">
@@ -59,7 +56,7 @@ export default function ClassSelection({ onSelect }: ClassSelectionProps) {
                             </button>
 
                             <button
-                                onClick={() => handleKelasSelect('lambatan')}
+                                onClick={() => onSelectKelas(KELAS_LAMBATAN.value)}
                                 className="group relative bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-500 focus:border-blue-500 focus:outline-none"
                             >
                                 <div className="text-center">
@@ -74,11 +71,11 @@ export default function ClassSelection({ onSelect }: ClassSelectionProps) {
                 )}
 
                 {/* Step 2: Kajian Selection */}
-                {selectedKelas && (
+                {kelas && (
                     <div className="mb-8">
                         {/* Back Button */}
                         <button
-                            onClick={handleBack}
+                            onClick={onBack}
                             className="mb-6 text-gray-600 hover:text-green-600 transition flex items-center gap-2"
                         >
                             <ArrowLeft size={18} />
@@ -87,7 +84,7 @@ export default function ClassSelection({ onSelect }: ClassSelectionProps) {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <button
-                                onClick={() => handleKajianSelect('quran')}
+                                onClick={() => onSelectMangkulan(MANGKULAN_QURAN.value)}
                                 className="group relative bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-emerald-500 focus:border-emerald-500 focus:outline-none"
                             >
                                 <div className="text-center">
@@ -99,7 +96,7 @@ export default function ClassSelection({ onSelect }: ClassSelectionProps) {
                             </button>
 
                             <button
-                                onClick={() => handleKajianSelect('hadist')}
+                                onClick={() => onSelectMangkulan(MANGKULAN_HADITS.value)}
                                 className="group relative bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-amber-500 focus:border-amber-500 focus:outline-none"
                             >
                                 <div className="text-center">
@@ -115,8 +112,8 @@ export default function ClassSelection({ onSelect }: ClassSelectionProps) {
 
                 {/* Progress Indicator */}
                 <div className="flex justify-center gap-2 mt-8">
-                    <div className={`w-3 h-3 rounded-full transition-colors ${!selectedKelas ? 'bg-green-600' : 'bg-gray-300'}`}></div>
-                    <div className={`w-3 h-3 rounded-full transition-colors ${selectedKelas ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+                    <div className={`w-3 h-3 rounded-full transition-colors ${!kelas ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+                    <div className={`w-3 h-3 rounded-full transition-colors ${kelas ? 'bg-green-600' : 'bg-gray-300'}`}></div>
                 </div>
             </div>
         </div>

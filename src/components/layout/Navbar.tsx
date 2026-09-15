@@ -17,13 +17,17 @@ const navLinks = [
     { href: '#kontak',    label: 'Kontak' },
 ];
 
-const NAVBAR_HEIGHT = 80;
+// Tinggi navbar dalam keadaan sudah di-scroll. Nilainya hanya didefinisikan sekali, di
+// --navbar-height pada globals.css, yang juga dipakai scroll-padding-top dan tinggi navbar.
+function getNavbarHeight() {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height')) || 0;
+}
 
 function scrollToSection(href: string) {
     const id = href.replace('#', '');
     const el = document.getElementById(id);
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - NAVBAR_HEIGHT;
+    const top = el.getBoundingClientRect().top + window.scrollY - getNavbarHeight();
     window.scrollTo({ top, behavior: 'smooth' });
 }
 
@@ -34,6 +38,8 @@ export function Navbar() {
     const observerRef = useRef<IntersectionObserver | null>(null);
     // Simpan semua section yang sedang intersecting beserta posisi top-nya
     const visibleSections = useRef<Map<string, number>>(new Map());
+    // Tujuan scroll dari menu mobile, dijalankan setelah animasi tutup menu selesai
+    const pendingScrollHref = useRef<string | null>(null);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 60);
@@ -56,19 +62,22 @@ export function Navbar() {
                     }
                 });
 
-                // Pilih section yang paling atas (offsetTop terkecil) di antara yang visible
+                // Pilih section paling bawah (offsetTop terbesar) di antara yang visible:
+                // itulah section yang tepi atasnya paling baru melewati navbar. Memilih
+                // yang terkecil membuat highlight tertinggal di section yang sedang keluar layar.
                 if (visibleSections.current.size > 0) {
                     let topId = '';
-                    let topVal = Infinity;
+                    let topVal = -Infinity;
                     visibleSections.current.forEach((top, id) => {
-                        if (top < topVal) { topVal = top; topId = id; }
+                        if (top > topVal) { topVal = top; topId = id; }
                     });
                     if (topId) setActiveSection(topId);
                 }
             },
             {
-                // Section dianggap aktif jika berada di area tepat di bawah navbar hingga 60% viewport
-                rootMargin: `-${NAVBAR_HEIGHT}px 0px -40% 0px`,
+                // Pita deteksi tipis dari tepi bawah navbar sampai 25% viewport. Pita yang
+                // lebar membuat dua section bertetangga terhitung bersamaan dalam rentang panjang.
+                rootMargin: `-${getNavbarHeight()}px 0px -75% 0px`,
                 threshold: 0,
             }
         );
@@ -88,8 +97,15 @@ export function Navbar() {
         e.preventDefault();
         // Set aktif langsung saat klik tanpa menunggu observer
         setActiveSection(href.replace('#', ''));
-        scrollToSection(href);
-        setIsMobileMenuOpen(false);
+        if (isMobileMenuOpen) {
+            // Menu mobile ditutup dulu. Animasi keluarnya menganimasikan height, dan framer-motion
+            // memulihkan posisi scroll saat mengukurnya, sehingga smooth scroll yang sudah jalan
+            // ikut dibatalkan. Scroll dijalankan dari onExitComplete setelah animasi selesai.
+            pendingScrollHref.current = href;
+            setIsMobileMenuOpen(false);
+        } else {
+            scrollToSection(href);
+        }
     };
 
     const onHero = !isScrolled;
@@ -101,12 +117,18 @@ export function Navbar() {
             className={cn(
                 'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
                 onHero
-                    ? 'py-4 bg-transparent'
-                    : 'py-2 bg-white/95 backdrop-blur-xl border-b border-emerald-100 shadow-sm'
+                    ? 'bg-transparent'
+                    : 'bg-white/95 backdrop-blur-xl border-b border-emerald-100 shadow-sm'
             )}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between">
+                <div className={cn(
+                    'flex items-center justify-between transition-[height] duration-500',
+                    // Tinggi ditetapkan eksplisit, bukan hasil padding ditambah isi. Keadaan scroll
+                    // memakai --navbar-height dikurangi 1px border bawah nav, sehingga tinggi total
+                    // navbar sama persis dengan offset scroll.
+                    onHero ? 'h-[82px]' : 'h-[calc(var(--navbar-height)_-_1px)]'
+                )}>
 
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group">
@@ -167,9 +189,21 @@ export function Navbar() {
                                 </a>
                             );
                         })}
-                        <a
-                            href="#kontak"
-                            onClick={(e) => handleNavClick(e, '#kontak')}
+                        {/* Halaman terpisah, bukan anchor — sengaja di luar navLinks
+                            supaya tidak ikut diamati IntersectionObserver */}
+                        <Link
+                            href="/player"
+                            className={cn(
+                                'px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300',
+                                onHero
+                                    ? 'text-white/80 hover:text-white hover:bg-white/15'
+                                    : 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50'
+                            )}
+                        >
+                            Kajian
+                        </Link>
+                        <Link
+                            href="/pendaftaran"
                             className={cn(
                                 'ml-3 px-5 py-2 text-sm font-semibold rounded-xl transition-all shadow-sm',
                                 onHero
@@ -178,7 +212,7 @@ export function Navbar() {
                             )}
                         >
                             Daftar
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -197,17 +231,25 @@ export function Navbar() {
             </div>
 
             {/* Mobile Menu */}
-            <AnimatePresence>
+            <AnimatePresence
+                onExitComplete={() => {
+                    const href = pendingScrollHref.current;
+                    pendingScrollHref.current = null;
+                    if (href) scrollToSection(href);
+                }}
+            >
                 {isMobileMenuOpen && (
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         className={cn(
-                            'md:hidden mt-2 mx-4 rounded-2xl overflow-hidden shadow-md border',
+                            // Margin menggantikan padding vertikal nav yang dulu mengapit menu, supaya
+                            // posisi menu tetap sama setelah tinggi baris atas dijadikan eksplisit.
+                            'md:hidden mx-4 rounded-2xl overflow-hidden shadow-md border',
                             onHero
-                                ? 'bg-black/40 border-white/20 backdrop-blur-md'
-                                : 'bg-white border-emerald-100'
+                                ? '-mt-2 mb-4 bg-black/40 border-white/20 backdrop-blur-md'
+                                : 'mb-2 bg-white border-emerald-100'
                         )}
                     >
                         <div className="p-4 space-y-1">
@@ -230,14 +272,26 @@ export function Navbar() {
                                     </a>
                                 );
                             })}
+                            <Link
+                                href="/player"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={cn(
+                                    'block px-4 py-3 rounded-lg transition font-medium text-sm',
+                                    onHero
+                                        ? 'text-white/80 hover:text-white hover:bg-white/15'
+                                        : 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50'
+                                )}
+                            >
+                                Kajian
+                            </Link>
                             <div className={cn('pt-2 border-t', onHero ? 'border-white/20' : 'border-emerald-100')}>
-                                <a
-                                    href="#kontak"
-                                    onClick={(e) => handleNavClick(e, '#kontak')}
+                                <Link
+                                    href="/pendaftaran"
+                                    onClick={() => setIsMobileMenuOpen(false)}
                                     className="block px-4 py-3 bg-emerald-600 text-white rounded-xl text-center font-semibold text-sm hover:bg-emerald-700 transition"
                                 >
                                     Daftar Sekarang
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </motion.div>

@@ -1,12 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { ChevronDown, GraduationCap, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const bgPhotos = [
     '/img/22.jpg',
-    '/img/23.jpg',
+    '/img/23.JPG',
     '/img/24.jpg',
     '/img/santri-putra.jpg',
     '/img/santri-putri.jpg',
@@ -95,13 +96,13 @@ export function Hero() {
 
                         {/* CTA */}
                         <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                            <a
-                                href="#kontak"
+                            <Link
+                                href="/pendaftaran"
                                 className="px-7 py-3.5 bg-emerald-600 text-white font-semibold rounded-2xl hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm"
                             >
                                 <GraduationCap className="w-4 h-4" />
                                 Daftar Sekarang
-                            </a>
+                            </Link>
                             <a
                                 href="#profil"
                                 className="px-7 py-3.5 bg-white/10 border border-white/25 text-white font-semibold rounded-2xl hover:bg-white/20 transition-all flex items-center justify-center gap-2 text-sm"

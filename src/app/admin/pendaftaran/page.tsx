@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { AdminHeader } from '@/components/admin/Header';
 import { supabase } from '@/lib/supabase';
-import { Pendaftaran, STATUS_PENDAFTARAN_OPTIONS } from '@/lib/types';
+import { logSupabaseError } from '@/lib/logSupabaseError';
+import { JENIS_KELAMIN_OPTIONS, Pendaftaran, STATUS_PENDAFTARAN_OPTIONS } from '@/lib/types';
 import { Check, X, Eye, Clock, GraduationCap, Phone } from 'lucide-react';
 
 export default function PendaftaranPage() {
@@ -22,7 +23,7 @@ export default function PendaftaranPage() {
             if (error) throw error;
             setPendaftaranList(data || []);
         } catch (error) {
-            console.error('Error fetching pendaftaran:', error);
+            logSupabaseError('Error fetching pendaftaran:', error);
         } finally {
             setLoading(false);
         }
@@ -46,7 +47,7 @@ export default function PendaftaranPage() {
             fetchPendaftaran();
             setSelectedPendaftaran(null);
         } catch (error) {
-            console.error('Error updating status:', error);
+            logSupabaseError('Error updating status:', error);
             alert('Gagal mengupdate status');
         }
     };
@@ -64,6 +65,9 @@ export default function PendaftaranPage() {
         };
         return { style: styles[status] || 'bg-gray-100 text-gray-700', label: labels[status] || status };
     };
+
+    const getJenisKelaminLabel = (value: string) =>
+        JENIS_KELAMIN_OPTIONS.find((opt) => opt.value === value)?.label || value || '-';
 
     const pendingCount = pendaftaranList.filter(p => p.status === 'pending').length;
 
@@ -92,7 +96,7 @@ export default function PendaftaranPage() {
                                             <div>
                                                 <h4 className="font-semibold text-gray-800">{item.nama}</h4>
                                                 <p className="text-xs text-gray-500">
-                                                    {new Date(item.created_at).toLocaleDateString('id-ID')}
+                                                    {getJenisKelaminLabel(item.jenis_kelamin)} · {new Date(item.created_at).toLocaleDateString('id-ID')}
                                                 </p>
                                             </div>
                                         </div>
@@ -137,6 +141,7 @@ export default function PendaftaranPage() {
                                 <tr>
                                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">No</th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama</th>
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Jenis Kelamin</th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Kampus</th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Telepon</th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal</th>
@@ -147,13 +152,13 @@ export default function PendaftaranPage() {
                             <tbody className="divide-y divide-gray-100">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                                        <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                                             Memuat data...
                                         </td>
                                     </tr>
                                 ) : pendaftaranList.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                                        <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                                             Belum ada data pendaftaran
                                         </td>
                                     </tr>
@@ -164,6 +169,7 @@ export default function PendaftaranPage() {
                                             <tr key={item.id} className="hover:bg-gray-50">
                                                 <td className="px-4 py-3 text-sm text-gray-600">{index + 1}</td>
                                                 <td className="px-4 py-3 font-medium text-gray-800">{item.nama}</td>
+                                                <td className="px-4 py-3 text-sm text-gray-600">{getJenisKelaminLabel(item.jenis_kelamin)}</td>
                                                 <td className="px-4 py-3 text-sm text-gray-600">{item.kampus}</td>
                                                 <td className="px-4 py-3 text-sm text-gray-600">{item.phone}</td>
                                                 <td className="px-4 py-3 text-sm text-gray-600">
@@ -242,6 +248,10 @@ export default function PendaftaranPage() {
                                 <div>
                                     <p className="text-sm text-gray-500">Jurusan</p>
                                     <p className="font-medium text-gray-800">{selectedPendaftaran.jurusan || '-'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">Jenis Kelamin</p>
+                                    <p className="font-medium text-gray-800">{getJenisKelaminLabel(selectedPendaftaran.jenis_kelamin)}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Telepon</p>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logSupabaseError } from '@/lib/logSupabaseError';
 import { Berita } from '@/lib/types';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
@@ -31,7 +32,7 @@ export default function BeritaCarousel() {
                 if (error) throw error;
                 setBeritaList(data || []);
             } catch (error) {
-                console.error('Error fetching berita:', error);
+                logSupabaseError('Error fetching berita:', error);
             } finally {
                 setLoading(false);
             }

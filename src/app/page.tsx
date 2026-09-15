@@ -1,9 +1,8 @@
 import { Navbar } from '@/components/layout/Navbar';
 import { Hero } from '@/components/home/Hero';
-import { AboutSection, ProgramSection, FacilitiesSection, ContactSection } from '@/components/home/InfoSections';
+import { AboutSection, ProgramSection, FacilitiesSection, ContactSection, GallerySection } from '@/components/home/InfoSections';
 import BeritaCarousel from '@/components/home/BeritaCarousel';
 import { Footer } from '@/components/layout/Footer';
-import { GallerySection } from '@/components/home/GallerySections';
 
 
 export default function Home() {

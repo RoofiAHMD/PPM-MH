@@ -4,15 +4,10 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, Re
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import { logSupabaseError } from '@/lib/logSupabaseError';
+import type { UsersProfile } from '@/lib/types';
 
-export type UserRole = 'admin' | 'guru' | 'guest';
-
-interface UserProfile {
-    id: string;
-    email: string;
-    nama: string | null;
-    role: UserRole;
-}
+// Tipe akun berasal dari satu sumber, yaitu src/lib/types.ts.
+export type { UserRole } from '@/lib/types';
 
 // 'found'   : profil termuat
 // 'missing' : kueri berhasil, tapi baris users_profile untuk user ini tidak ada
@@ -23,7 +18,7 @@ export type ProfileStatus = 'idle' | 'loading' | 'found' | 'missing' | 'error';
 // dihitung dari keduanya saat render, jadi tidak ada flag manual yang bisa tertinggal
 // menyala selamanya atau padam sebelum hasil untuk user yang sekarang datang.
 type ProfileResult = { userId: string; requestId: number } & (
-    | { status: 'found'; profile: UserProfile }
+    | { status: 'found'; profile: UsersProfile }
     | { status: 'missing' }
     | { status: 'error'; message: string }
 );
@@ -31,7 +26,7 @@ type ProfileResult = { userId: string; requestId: number } & (
 interface AuthContextType {
     user: User | null;
     session: Session | null;
-    profile: UserProfile | null;
+    profile: UsersProfile | null;
     profileStatus: ProfileStatus;
     profileError: string | null;
     loading: boolean;
@@ -122,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     logSupabaseError('Error fetching profile:', error);
                     setProfileResult({ userId, requestId, status: 'error', message: error.message });
                 } else if (data) {
-                    setProfileResult({ userId, requestId, status: 'found', profile: data as UserProfile });
+                    setProfileResult({ userId, requestId, status: 'found', profile: data as UsersProfile });
                 } else {
                     setProfileResult({ userId, requestId, status: 'missing' });
                 }

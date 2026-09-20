@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AdminHeader } from '@/components/admin/Header';
 import { supabase } from '@/lib/supabase';
 import { logSupabaseError } from '@/lib/logSupabaseError';
+import { useModalDismiss } from '@/lib/useModalDismiss';
 import { JENIS_KELAMIN_OPTIONS, Pendaftaran, STATUS_PENDAFTARAN_OPTIONS } from '@/lib/types';
 import { Check, X, Eye, Clock, GraduationCap, Phone } from 'lucide-react';
 
@@ -11,6 +12,7 @@ export default function PendaftaranPage() {
     const [pendaftaranList, setPendaftaranList] = useState<Pendaftaran[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedPendaftaran, setSelectedPendaftaran] = useState<Pendaftaran | null>(null);
+    const detailModalDismiss = useModalDismiss(selectedPendaftaran !== null, () => setSelectedPendaftaran(null));
 
     const fetchPendaftaran = async () => {
         setLoading(true);
@@ -221,11 +223,11 @@ export default function PendaftaranPage() {
 
             {/* Detail Modal */}
             {selectedPendaftaran && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" {...detailModalDismiss}>
                     <div className="bg-white rounded-2xl w-full max-w-lg">
                         <div className="flex items-center justify-between p-6 border-b">
                             <h2 className="text-xl font-bold text-gray-800">Detail Pendaftaran</h2>
-                            <button onClick={() => setSelectedPendaftaran(null)} className="p-2 hover:bg-gray-100 rounded-lg">
+                            <button onClick={() => setSelectedPendaftaran(null)} className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
                                 <X size={20} />
                             </button>
                         </div>

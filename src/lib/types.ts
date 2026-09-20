@@ -200,3 +200,81 @@ export const CATEGORY_BERITA_OPTIONS = [
     { value: 'pengumuman', label: 'Pengumuman' },
 ] as const;
 
+// ============================================
+// Akun Types (users_profile dan pendaftaran akun)
+// ============================================
+// role menjawab "dia siapa", status menjawab "sudah boleh masuk atau belum".
+export type UserRole = 'admin' | 'guru' | 'orang_tua' | 'santri' | 'guest';
+export type UserStatus = 'pending' | 'approved' | 'rejected';
+
+export interface UsersProfile {
+    id: string;
+    email: string;
+    nama: string | null;
+    role: UserRole;
+    status: UserStatus;
+    created_at: string;
+    updated_at: string;
+}
+
+// Jenis kelamin orang dewasa pada pendaftaran akun. Sengaja terpisah dari
+// JENIS_KELAMIN_OPTIONS di atas: putra dan putri adalah istilah pengelompokan
+// asrama santri, bukan jenis kelamin.
+export type JenisKelaminAkun = 'laki-laki' | 'perempuan';
+
+export interface PendaftaranGuru {
+    id: string; // sama dengan users_profile.id
+    nik: string;
+    alamat_asal: string;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    phone: string;
+    jenis_kelamin: JenisKelaminAkun;
+    created_at: string;
+}
+
+export type PeranOrangTua = 'ayah' | 'ibu' | 'wali';
+
+export interface PendaftaranOrangTua {
+    id: string; // sama dengan users_profile.id
+    nomor_kk: string;
+    kota_asal: string;
+    alamat_sambung: string;
+    phone: string;
+    jenis_kelamin: JenisKelaminAkun;
+    peran: PeranOrangTua;
+    santri_id: string | null;
+    created_at: string;
+}
+
+// Hasil fungsi search_santri di database, untuk dropdown orang tua.
+export interface SantriSearchResult {
+    id: string;
+    nama: string;
+}
+
+export const ROLE_OPTIONS = [
+    { value: 'admin', label: 'Admin' },
+    { value: 'guru', label: 'Guru' },
+    { value: 'orang_tua', label: 'Orang Tua' },
+    { value: 'santri', label: 'Santri' },
+    { value: 'guest', label: 'Guest' },
+] as const;
+
+export const STATUS_AKUN_OPTIONS = [
+    { value: 'pending', label: 'Menunggu' },
+    { value: 'approved', label: 'Disetujui' },
+    { value: 'rejected', label: 'Ditolak' },
+] as const;
+
+export const JENIS_KELAMIN_AKUN_OPTIONS = [
+    { value: 'laki-laki', label: 'Laki-laki' },
+    { value: 'perempuan', label: 'Perempuan' },
+] as const;
+
+export const PERAN_ORANG_TUA_OPTIONS = [
+    { value: 'ayah', label: 'Ayah' },
+    { value: 'ibu', label: 'Ibu' },
+    { value: 'wali', label: 'Wali' },
+] as const;
+

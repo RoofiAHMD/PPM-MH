@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AdminHeader } from '@/components/admin/Header';
 import { supabase } from '@/lib/supabase';
 import { logSupabaseError } from '@/lib/logSupabaseError';
+import { useModalDismiss } from '@/lib/useModalDismiss';
 import { Pengurus } from '@/lib/types';
 import { Plus, Edit2, Trash2, X, Phone, Mail } from 'lucide-react';
 
@@ -11,6 +12,7 @@ export default function PengurusPage() {
     const [pengurusList, setPengurusList] = useState<Pengurus[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const modalDismiss = useModalDismiss(showModal, () => setShowModal(false));
     const [editingPengurus, setEditingPengurus] = useState<Pengurus | null>(null);
     const [formData, setFormData] = useState({
         nama: '',
@@ -190,13 +192,13 @@ export default function PengurusPage() {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" {...modalDismiss}>
                     <div className="bg-white rounded-2xl w-full max-w-md">
                         <div className="flex items-center justify-between p-6 border-b">
                             <h2 className="text-xl font-bold text-gray-800">
                                 {editingPengurus ? 'Edit Pengurus' : 'Tambah Pengurus'}
                             </h2>
-                            <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                            <button onClick={() => setShowModal(false)} className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
                                 <X size={20} />
                             </button>
                         </div>

@@ -26,7 +26,7 @@ export default function LoginPage() {
             setError(error.message);
             setLoading(false);
         } else {
-            router.push('/admin');
+            router.push('/portal');
         }
     };
 
@@ -107,15 +107,6 @@ export default function LoginPage() {
                             )}
                         </button>
                     </form>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-gray-400 text-sm">
-                            Belum punya akun?{' '}
-                            <Link href="/auth/register" className="text-emerald-400 hover:text-emerald-300 font-medium">
-                                Daftar di sini
-                            </Link>
-                        </p>
-                    </div>
                 </div>
 
                 {/* Back link */}

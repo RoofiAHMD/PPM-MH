@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
+import { PENDAFTARAN_SANTRI_FORM_URL } from '@/lib/site';
 import { ChevronDown, GraduationCap, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -96,13 +96,15 @@ export function Hero() {
 
                         {/* CTA */}
                         <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                            <Link
-                                href="/pendaftaran"
+                            <a
+                                href={PENDAFTARAN_SANTRI_FORM_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="px-7 py-3.5 bg-emerald-600 text-white font-semibold rounded-2xl hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm"
                             >
                                 <GraduationCap className="w-4 h-4" />
                                 Daftar Sekarang
-                            </Link>
+                            </a>
                             <a
                                 href="#profil"
                                 className="px-7 py-3.5 bg-white/10 border border-white/25 text-white font-semibold rounded-2xl hover:bg-white/20 transition-all flex items-center justify-center gap-2 text-sm"

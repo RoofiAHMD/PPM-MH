@@ -115,36 +115,6 @@ export interface SantriFormData {
 }
 
 // ============================================
-// Pendaftaran Types
-// ============================================
-export interface Pendaftaran {
-    id: string;
-    nama: string;
-    jenis_kelamin: 'putra' | 'putri';
-    kampus: string;
-    jurusan?: string;
-    phone: string;
-    email?: string;
-    alamat?: string;
-    motivasi?: string;
-    status: 'pending' | 'approved' | 'rejected';
-    reviewed_by?: string;
-    reviewed_at?: string;
-    created_at: string;
-}
-
-export interface PendaftaranFormData {
-    nama: string;
-    jenis_kelamin: string; // kosong sebelum dipilih; nilai sah ada di JENIS_KELAMIN_OPTIONS
-    kampus: string;
-    phone: string;
-    jurusan: string;
-    email: string;
-    alamat: string;
-    motivasi: string;
-}
-
-// ============================================
 // Berita Types
 // ============================================
 export interface Berita {
@@ -182,17 +152,6 @@ export const STATUS_SANTRI_OPTIONS = [
     { value: 'cuti', label: 'Cuti' },
 ] as const;
 
-export const JENIS_KELAMIN_OPTIONS = [
-    { value: 'putra', label: 'Putra' },
-    { value: 'putri', label: 'Putri' },
-] as const;
-
-export const STATUS_PENDAFTARAN_OPTIONS = [
-    { value: 'pending', label: 'Menunggu' },
-    { value: 'approved', label: 'Diterima' },
-    { value: 'rejected', label: 'Ditolak' },
-] as const;
-
 export const CATEGORY_BERITA_OPTIONS = [
     { value: 'umum', label: 'Umum' },
     { value: 'kajian', label: 'Kajian' },
@@ -201,7 +160,7 @@ export const CATEGORY_BERITA_OPTIONS = [
 ] as const;
 
 // ============================================
-// Akun Types (users_profile dan pendaftaran akun)
+// Akun Types (users_profile)
 // ============================================
 // role menjawab "dia siapa", status menjawab "sudah boleh masuk atau belum".
 export type UserRole = 'admin' | 'guru' | 'orang_tua' | 'santri' | 'guest';
@@ -217,42 +176,6 @@ export interface UsersProfile {
     updated_at: string;
 }
 
-// Jenis kelamin orang dewasa pada pendaftaran akun. Sengaja terpisah dari
-// JENIS_KELAMIN_OPTIONS di atas: putra dan putri adalah istilah pengelompokan
-// asrama santri, bukan jenis kelamin.
-export type JenisKelaminAkun = 'laki-laki' | 'perempuan';
-
-export interface PendaftaranGuru {
-    id: string; // sama dengan users_profile.id
-    nik: string;
-    alamat_asal: string;
-    tempat_lahir: string;
-    tanggal_lahir: string;
-    phone: string;
-    jenis_kelamin: JenisKelaminAkun;
-    created_at: string;
-}
-
-export type PeranOrangTua = 'ayah' | 'ibu' | 'wali';
-
-export interface PendaftaranOrangTua {
-    id: string; // sama dengan users_profile.id
-    nomor_kk: string;
-    kota_asal: string;
-    alamat_sambung: string;
-    phone: string;
-    jenis_kelamin: JenisKelaminAkun;
-    peran: PeranOrangTua;
-    santri_id: string | null;
-    created_at: string;
-}
-
-// Hasil fungsi search_santri di database, untuk dropdown orang tua.
-export interface SantriSearchResult {
-    id: string;
-    nama: string;
-}
-
 export const ROLE_OPTIONS = [
     { value: 'admin', label: 'Admin' },
     { value: 'guru', label: 'Guru' },
@@ -266,15 +189,3 @@ export const STATUS_AKUN_OPTIONS = [
     { value: 'approved', label: 'Disetujui' },
     { value: 'rejected', label: 'Ditolak' },
 ] as const;
-
-export const JENIS_KELAMIN_AKUN_OPTIONS = [
-    { value: 'laki-laki', label: 'Laki-laki' },
-    { value: 'perempuan', label: 'Perempuan' },
-] as const;
-
-export const PERAN_ORANG_TUA_OPTIONS = [
-    { value: 'ayah', label: 'Ayah' },
-    { value: 'ibu', label: 'Ibu' },
-    { value: 'wali', label: 'Wali' },
-] as const;
-

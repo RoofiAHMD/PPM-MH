@@ -9,7 +9,6 @@ import {
     Building2,
     LayoutDashboard,
     Users,
-    UserPlus,
     Newspaper,
     UserCog,
     Mic,
@@ -22,7 +21,6 @@ import {
 const navItems = [
     { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/santri', icon: Users, label: 'Santri' },
-    { href: '/admin/pendaftaran', icon: UserPlus, label: 'Pendaftaran' },
     { href: '/admin/berita', icon: Newspaper, label: 'Berita' },
     { href: '/admin/pengurus', icon: UserCog, label: 'Pengurus' },
     { href: '/admin/recordings', icon: Mic, label: 'Recordings' },

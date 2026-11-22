@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PENDAFTARAN_SANTRI_FORM_URL } from '@/lib/site';
 import Image from 'next/image';
 
 // ✅ Urutan harus sama persis dengan urutan section di halaman
@@ -202,8 +203,11 @@ export function Navbar() {
                         >
                             Kajian
                         </Link>
-                        <Link
-                            href="/pendaftaran"
+                        {/* Penerimaan santri memakai Google Form, jadi ini tautan luar. */}
+                        <a
+                            href={PENDAFTARAN_SANTRI_FORM_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className={cn(
                                 'ml-3 px-5 py-2 text-sm font-semibold rounded-xl transition-all shadow-sm',
                                 onHero
@@ -212,7 +216,7 @@ export function Navbar() {
                             )}
                         >
                             Daftar
-                        </Link>
+                        </a>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -285,13 +289,15 @@ export function Navbar() {
                                 Kajian
                             </Link>
                             <div className={cn('pt-2 border-t', onHero ? 'border-white/20' : 'border-emerald-100')}>
-                                <Link
-                                    href="/pendaftaran"
+                                <a
+                                    href={PENDAFTARAN_SANTRI_FORM_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="block px-4 py-3 bg-emerald-600 text-white rounded-xl text-center font-semibold text-sm hover:bg-emerald-700 transition"
                                 >
                                     Daftar Sekarang
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     </motion.div>
